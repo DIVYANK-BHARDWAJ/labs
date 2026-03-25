@@ -1,30 +1,31 @@
-# 🧪 Hackathon Practice Labs
+# Lab UX & Support 🛠️
 
-Auto-graded practice exercises. Push your code → GitHub Actions scores you instantly.
+Welcome to the auto-graded lab system! These labs are designed to build your AI engineering skills step-by-step.
 
-## 📊 How Scoring Works
-- **5 Labs × 20 points each = 100 points total**
-- Tests run automatically on every `git push`
-- See your score in the **Actions → Summary** tab
+## 📜 Table of Contents
+1. [**Lab 01: API Fetcher**](./lab-01-api-fetcher/) — Easy
+2. [**Lab 02: LLM JSON**](./lab-02-llm-json/) — Easy
+3. [**Lab 03: TOON Converter**](./lab-03-toon-convert/) — Medium
+4. [**Lab 04: Vehicle Detect**](./lab-04-vehicle-detect/) — Medium
+5. [**Lab 05: RAG Q&A**](./lab-05-rag-qa/) — Hard
 
-## 🗂️ Labs
+---
 
-| # | Lab | Skill Tested |
-|---|-----|-------------|
-| 01 | [API Fetcher](./lab-01-api-fetcher/) | REST APIs, JSON parsing |
-| 02 | [LLM JSON Output](./lab-02-llm-json/) | Prompt Engineering, Structured Output |
-| 03 | [TOON Converter](./lab-03-toon-convert/) | Tokenization, Data Formats |
-| 04 | [Vehicle Detection](./lab-04-vehicle-detect/) | Computer Vision, YOLO |
-| 05 | [RAG Q&A](./lab-05-rag-qa/) | Retrieval Augmented Generation |
+## 🔍 How to Read GitHub Actions Logs
 
-## 🚀 Getting Started
-1. Fork this repository to your GitHub account.
-2. Clone your fork locally.
-3. Navigate to a lab folder and read its `README.md`.
-4. Edit the `solution.py` file to complete the TODO items.
-5. Push your changes — the grader runs automatically.
+If your score isn't what you expected, check the logs:
+1. Go to the **Actions** tab in your repository.
+2. Click on the latest run (e.g., "🎓 Auto-Grade Labs").
+3. Click the **grade** job on the left.
+4. Expand the **🧪 Run All Lab Tests** step.
+5. If a test failed, it will show a red `F` and a traceback explaining why.
 
-## 📜 Rules
-- Only edit `solution.py` inside each lab folder.
-- Do NOT modify the `tests/` folder.
-- Do NOT modify `grader/` or `.github/`.
+## 💡 Common Errors
+
+-   **SyntaxError**: Python can't run your code because of a typo (missing `:` or `)`).
+-   **ImportError**: You are using a library (like `requests`) but didn't import it.
+-   **AssertionError**: Your function returned something, but it's not what the test expected (e.g., returning a string instead of a list).
+
+## 🆘 Where to Ask for Help
+-   Post in the `#labs-help` Discord channel.
+-   Check the `README.md` inside each lab folder for specific tips.

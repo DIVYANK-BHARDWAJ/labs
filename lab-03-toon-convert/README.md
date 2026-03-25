@@ -1,23 +1,25 @@
-# Lab 03: TOON Converter 🔄
+# Lab 03: TOON Converter 🎨
 
-**Points: 20 | Time: ~1 hour**
+**Difficulty**: Medium
 
-## Problem
-TOON (Token-Oriented Object Notation) represents arrays of JSON objects as a header row + data rows — similar to CSV, but for JSON.
+## Objective
+Convert standard JSON data into the **TOON (Text Object Oriented Notation)** format to save token costs.
 
-## Your Task
-Implement `json_to_toon(data)` in `solution.py`.
+## Task
+Implement `to_toon(data)` and `from_toon(toon_str)` in `solution.py`.
 
-## TOON Format
-```
-# fields: id, name, score
-1 | Alice | 92
-2 | Bob | 87
-```
+## TOON Logic
+- **JSON**: `{"name": "Alice", "age": 25}`
+- **TOON**: `[name:Alice|age:25]`
 
-## Requirements
-- Input: a **list of dicts** (all with same keys).
-- Output: a **string** in the TOON format:
-  - First line: `# fields: key1, key2, key3`
-  - Remaining lines: `val1 | val2 | val3` for each row
-- Also implement `count_tokens(text)` → returns `len(text.split())` as a proxy for token count.
+## Instructions
+1. **to_toon**: Join key-value pairs with `:`, and items with `|`. Wrap in `[]`.
+2. **from_toon**: Split by `|`, then by `:`, and reconstruct the dictionary.
+
+## Example
+**Input**: `{"id": 1, "status": "active"}`
+**Output**: `[id:1|status:active]`
+
+## Common Mistakes
+- Leaving trailing `|` characters inside the brackets.
+- Forgetting to convert non-string values (like integers) to strings.

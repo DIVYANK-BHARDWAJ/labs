@@ -1,21 +1,22 @@
 # Lab 02: LLM JSON Output 🤖
 
-**Points: 20 | Time: ~1 hour**
+**Difficulty**: Easy (Beginner)
 
-## Problem
-Write a function that takes a plain text article and returns a structured JSON summary (no actual LLM call required — simulate the behavior).
+## Objective
+Ensuring an LLM returns raw JSON that can be parsed by code, not just conversational text.
 
-## Your Task
-Implement `summarize_text(text)` in `solution.py`.
+## Task
+Implement `get_model_specs(prompt)` in `solution.py`.
 
-## Requirements
-- Input: any string of text
-- Output: a Python `dict` with exactly these keys:
-  - `"title"` — a 5-word max summary title (string)
-  - `"points"` — a list of 3 key points (list of 3 strings)
-  - `"sentiment"` — one of: `"positive"`, `"neutral"`, `"negative"` (string)
+## Instructions
+1. **System Prompt**: Tell the model "Return ONLY raw JSON. No markdown backticks."
+2. **Schema**: The output must have `{"model_name": str, "parameters": str}`.
+3. **Parsing**: Try to parse the model output using `json.loads()`.
 
-## How to Test Locally
-```bash
-pytest tests/
-```
+## Example
+**Input**: "Tell me about GPT-4"
+**Expected Output**: `{"model_name": "GPT-4", "parameters": "1.7T"}` (values may vary).
+
+## Common Mistakes
+- Not stripping extra text (like "Here is the JSON:") from the model output.
+- Forgetting to handle cases where the LLM hallucinates bad JSON syntax.

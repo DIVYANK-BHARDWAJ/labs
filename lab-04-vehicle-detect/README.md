@@ -1,22 +1,22 @@
 # Lab 04: Vehicle Detection 🚗
 
-**Points: 20 | Time: ~1-2 hours**
+**Difficulty**: Medium
 
-## Problem
-Process a mock list of detection results (as if returned by a YOLO model) and extract useful statistics.
+## Objective
+Use a computer vision model (YOLOv8) to filter and count vehicles in an image metadata list.
 
-> **Note**: This lab does NOT require a GPU or camera. It simulates working with detection output data so you can practice the logic without any hardware dependency.
+## Task
+Implement `detect_vehicles(detections)` in `solution.py`.
 
-## Your Task
-Implement the functions in `solution.py`.
+## Instructions
+1. **Classes**: Filter classes to only include `car`, `truck`, `bus`, `motorcycle`.
+2. **Confidence**: Only keep detections with `confidence > 0.5`.
+3. **Output**: Return a count of the valid vehicles.
 
-## Detection Data Format
-```python
-# Each detection is a dict:
-{"class_name": "car", "confidence": 0.91, "bbox": [100, 50, 200, 150]}
-```
+## Example
+**Input**: `[{"class": "car", "conf": 0.9}, {"class": "person", "conf": 0.8}]`
+**Output**: `1`
 
-## Requirements
-- `count_by_class(detections)` → returns a `dict` mapping class name to count
-- `filter_by_confidence(detections, threshold)` → returns only detections above `threshold`
-- `get_top_detection(detections)` → returns the single dict with the highest confidence
+## Common Mistakes
+- Misspelling the vehicle classes.
+- Inclusive vs Exclusive confidence thresholds (use `>`).

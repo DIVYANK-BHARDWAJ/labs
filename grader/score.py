@@ -1,11 +1,10 @@
 """
-Hackathon Auto-Grader
-Reads per-lab pytest JSON reports, computes score per lab, and writes
-a Markdown summary to $GITHUB_STEP_SUMMARY.
+Hackathon Auto-Grader V3 (UX Enhanced)
+Reads per-lab pytest JSON reports, computes score, and writes
+a Markdown summary with visual status indicators.
 """
 import json
 import os
-import glob
 from pathlib import Path
 
 LABS = [
@@ -18,10 +17,9 @@ LABS = [
 POINTS_PER_LAB = 20
 
 def get_lab_score(lab_dir: str) -> dict:
-    # Use the pattern test_results_{lab_dir}.json
     report_file = f"test_results_{lab_dir}.json"
     if not Path(report_file).exists():
-        return {"passed": 0, "total": 0}
+        return {"passed": 0, "total": 0, "status": "MISSING"}
 
     try:
         with open(report_file) as f:
@@ -29,25 +27,29 @@ def get_lab_score(lab_dir: str) -> dict:
             tests = data.get("tests", [])
             passed = sum(1 for t in tests if t.get("outcome") == "passed")
             total = len(tests)
-            return {"passed": passed, "total": total}
-    except Exception as e:
-        print(f"Error reading {report_file}: {e}")
-        return {"passed": 0, "total": 0}
+            
+            # Status Logic
+            if total == 0: status = "ERROR"
+            elif passed == total: status = "PASS"
+            elif passed > 0: status = "PARTIAL"
+            else: status = "FAIL"
+            
+            return {"passed": passed, "total": total, "status": status}
+    except Exception:
+        return {"passed": 0, "total": 0, "status": "ERROR"}
 
 def score_labs() -> list[dict]:
     results = []
     for lab_dir, lab_name in LABS:
-        score_data = get_lab_score(lab_dir)
-        passed = score_data["passed"]
-        total = score_data["total"]
-        points = round((passed / total) * POINTS_PER_LAB) if total > 0 else 0
-        
+        s = get_lab_score(lab_dir)
+        points = round((s["passed"] / s["total"]) * POINTS_PER_LAB) if s["total"] > 0 else 0
         results.append({
             "name": lab_name,
-            "passed": passed,
-            "total": total,
+            "passed": s["passed"],
+            "total": s["total"],
             "points": points,
             "max": POINTS_PER_LAB,
+            "status": s["status"]
         })
     return results
 
@@ -56,38 +58,39 @@ def build_summary(results: list[dict]) -> str:
     max_points = len(LABS) * POINTS_PER_LAB
     pct = round((total_points / max_points) * 100) if max_points else 0
 
+    # Indicator mapping
+    icons = {"PASS": "✅", "PARTIAL": "🟡", "FAIL": "❌", "MISSING": "⚪", "ERROR": "❓"}
+
     lines = [
-        "# 🎓 Hackathon Lab Score Report",
+        "# 🎓 AI Hackathon 2026: Lab Score Report",
         "",
-        f"## 🏆 Total Score: `{total_points} / {max_points}` ({pct}%)",
+        f"## 🏆 Progress Score: `{total_points} / {max_points}` (**{pct}%**)",
         "",
-        "| Lab | Tests Passed | Points |",
-        "|-----|-------------|--------|",
+        "| Status | Lab | Tests Passed | Score |",
+        "|:---:|-----|:---:|:---:|",
     ]
     for r in results:
-        # Success if at least one test exists and all passed
-        status = "✅" if r["passed"] == r["total"] and r["total"] > 0 else ("⚠️" if r["passed"] > 0 else "❌")
-        # Handle cases where no tests were found
-        if r["total"] == 0:
-            status = "❌"
-        lines.append(f"| {status} {r['name']} | {r['passed']}/{r['total']} | {r['points']}/{r['max']} |")
+        icon = icons.get(r["status"], "❓")
+        lines.append(f"| {icon} | {r['name']} | `{r['passed']}/{r['total']}` | `{r['points']}/{r['max']}` |")
 
     lines += [
         "",
         "---",
-        "> **Tip:** Push again after fixing failing tests — your score will update automatically.",
+        "### 💡 Next Steps",
+        "> **✅ PASS**: Great job! Move to the next lab or explore starter kits.",
+        "> **🟡 PARTIAL**: You're close! Check the logs for specific failing test cases.",
+        "> **❌ FAIL / ⚪ MISSING**: Implement the TODOs in `solution.py` and push again.",
+        "",
+        "**[View Detailed Logs](https://github.com/Inmodel-Labs/labs/actions)**"
     ]
     return "\n".join(lines)
 
 def main():
     results = score_labs()
     summary = build_summary(results)
-
-    # Print to console for debugging
     print(summary)
 
-    # Write to GitHub Step Summary
-    summary_file = os.environ.get("GITHUB_STEP_SUMMARY", "")
+    summary_file = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary_file:
         with open(summary_file, "a") as f:
             f.write(summary)
